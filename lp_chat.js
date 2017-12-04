@@ -13,29 +13,25 @@ http.createServer(function (req, res) {
             var body = '';
             req
                 .on('readable', function () {
-                    body += req.read();
-                    if(body.length > 1e4){
-                        res.statusCode = 413;
-                        res.end('too big')
-                    }
+                    var b=req.read();
+                    body += (b!=null ? b : '');
                 })
                 .on('end', function () {
-                    //console.log(body);
-                    // try {
-                    //     body = JSON.parse(body);
-                    // } catch (e){
-                    //     res.statusCode = 400;
-                    //     res.end('Bad request');
-                    //     return;
-                    // }
-                    chat.publish(JSON.parse(req.read()).message);
+                    try {
+                        body = JSON.parse(body).message;
+                    } catch (e){
+                        res.statusCode = 400;
+                        res.end(body);
+                        return;
+                    }
+                    chat.publish(body);
                     res.end('ok')
                 });
             break;
 
         default:
             res.statusCode = 404;
-            res.end('Hui vam');
+            res.end('Not found');
     }
 }).listen(3000);
 
@@ -69,17 +65,17 @@ function sendFile(fileName, res) {
     // })
     /* pipe (= stream) */
     var stream = new fs.ReadStream(fileName/*, {encoding: 'utf-8'}*/);
-    stream.pipe(res);
     stream
-        .on('error', function (err) {
-            res.statusCode = 505;
-            res.end('Server error');
-        })
         .on('open', function () {
             console.log('open');
         })
+        .pipe(res)
         .on('close', function () {
             console.log('close');
+        })
+        .on('error', function (err) {
+            res.statusCode = 505;
+            res.end('Server error');
         });
     res.on('close', function () {
         stream.destroy();

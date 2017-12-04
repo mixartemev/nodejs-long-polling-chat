@@ -19,6 +19,7 @@
     function subscribe() {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "subscribe", true);
+        xhr.setRequestHeader("Cache-Control", "no-cache");
         xhr.onload = function (ev) {
             var li = document.createElement('li');
             li.textContent = this.responseText;
@@ -26,7 +27,7 @@
             subscribe();
         };
         xhr.onerror = xhr.onabort = function (ev) {
-            setTimeout(subscribe, 500);
+            setTimeout(subscribe, 2000);
         };
         xhr.send('');
     }

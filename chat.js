@@ -2,6 +2,9 @@ var clients = [];
 exports.subscribe = function (req, res) {
     console.log("subscribe");
     clients.push(res);
+    res.on('close', function () {
+        clients.splice(clients.indexOf(res), 1);
+    })
 };
 exports.publish = function (message) {
     console.log("publish '%s'", message);
@@ -10,3 +13,7 @@ exports.publish = function (message) {
     });
     clients = [];//toDo сделать вырезание каждого отдельного клиента в цикле
 };
+
+setInterval(function () {
+    console.log(clients.length);
+}, 2000);
