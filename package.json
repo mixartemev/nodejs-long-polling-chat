@@ -1,0 +1,9 @@
+{
+  "name": "nod",
+  "version": "1.0.0",
+  "description": "test node app",
+  "main": "index.js",
+  "author": "artemiev",
+  "license": "MIT",
+  "dependencies": {}
+}
