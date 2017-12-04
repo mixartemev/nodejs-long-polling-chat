@@ -28,7 +28,7 @@ server.on('request', function (req, res) {
             res.end(mess)
         }else {
             res.statusCode = 404;
-            res.end('Hui vam!');
+            res.end('Not found');
         }
     }else {
         res.end('requested ' + ++counter);
